@@ -12,9 +12,9 @@ class SpriteSheet(object):
     def __init__(self, filename):
         try:
             self.sheet = pygame.image.load(filename).convert_alpha()
-        except pygame.error as message:
-            print(f"Unable to load spritesheet image: {filename}")
-            raise SystemExit(message)
+        except pygame.error as e:
+            print(f'Unable to load spritesheet image: {filename}')
+            raise SystemExit(e)
 
     def load_strip(self, width, height, count, l_shrink=0, r_shrink=0, t_shrink=0, d_shrink=0):
         images = []

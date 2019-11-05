@@ -4,22 +4,26 @@ from utility import spritesheet
 
 
 class Knight(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, *groups):
         super(Knight, self).__init__()
         self.x = x
         self.y = y
         self.width = 125
         self.height = 125
         self.animations = {}
-        self.animation_count = 0
+        self.animation_time = 3
+        self.animation_elapsed_time = 0
+        self.animation_steps = 0
         self.load_animations()
         self.current_animation = 'idle'
         self.image = self.animations.get(self.current_animation)[0]
         self.rect = (self.x, self.y, self.width, self.height)
 
     def update(self):
-        self.animation_count += 1
-        animation_index = self.animation_count % len(self.animations['idle'])
+        self.animation_elapsed_time += 1
+        if self.animation_elapsed_time % self.animation_time == 0:
+            self.animation_steps += 1
+        animation_index = self.animation_steps % len(self.animations['idle'])
         self.image = self.animations.get(self.current_animation)[animation_index]
 
     def load_animations(self):
