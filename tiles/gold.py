@@ -10,7 +10,7 @@ class Gold(pygame.sprite.Sprite):
         self.height = height
         self.image = None
         self.load_image()
-        self.rect = (self.x, self.y, self.width, self.height)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def load_image(self):
         image_directory = os.path.abspath('img/tiles')

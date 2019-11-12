@@ -30,7 +30,7 @@ class Game:
         self.playing = True
         self.current_bg = self.backgrounds.get("day_sky")
         clock = pygame.time.Clock()
-        self.entities.add(Knight(0, 0))
+        self.entities.add(Knight(0, 0, self))
         self.stage_builder = StageBuilder(self.width, self.height)
         self.tiles = self.stage_builder.load_stage('GOLDEN_PLATFORM')
 
