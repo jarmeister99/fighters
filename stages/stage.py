@@ -1,6 +1,6 @@
 import pygame
 
-from tiles.gold import Gold
+from tiles.grass import Grass
 
 
 class StageBuilder():
@@ -10,7 +10,7 @@ class StageBuilder():
 
     def load_stage(self, stage_key):
         tiles = pygame.sprite.Group()
-        if stage_key == 'GOLDEN_PLATFORM':
-            for i in range(self.width // 64):
-                tiles.add(Gold(i * 64 + 20, self.height - 64, 64, 64))
+        if stage_key == 'GRASS_PLATFORM':
+            for i in range(self.width // 64 + 1):
+                tiles.add(Grass(i * 64, self.height - 64, 64, 64))
         return tiles

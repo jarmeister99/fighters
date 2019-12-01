@@ -35,7 +35,7 @@ class Game:
         self.player = Knight(0, 0, self)
         self.entities.add(self.player)
         self.stage_builder = StageBuilder(self.width, self.height)
-        self.tiles = self.stage_builder.load_stage('GOLDEN_PLATFORM')
+        self.tiles = self.stage_builder.load_stage('GRASS_PLATFORM')
 
         while self.playing:
             clock.tick(60)
