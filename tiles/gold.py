@@ -1,16 +1,15 @@
 import pygame
 import os
 
+# Gold top is 636
 class Gold(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         super(Gold, self).__init__()
-        self.x = x
-        self.y = y
         self.width = width
         self.height = height
         self.image = None
-        self.load_image()
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.image = self.load_image()
+        self.rect = pygame.Rect(x, y, self.width, self.height)
 
     def load_image(self):
         image_directory = os.path.abspath('img/tiles')

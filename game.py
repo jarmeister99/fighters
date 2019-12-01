@@ -7,9 +7,11 @@ from stages.stage import StageBuilder
 GAME_WIDTH = 1000
 GAME_HEIGHT = 700
 
+
 class Game:
     def __init__(self):
         self.entities = pygame.sprite.Group()
+        self.player = None
         self.tiles = None
         self.stage_builder = None
         self.backgrounds = {}
@@ -30,7 +32,8 @@ class Game:
         self.playing = True
         self.current_bg = self.backgrounds.get("day_sky")
         clock = pygame.time.Clock()
-        self.entities.add(Knight(0, 0, self))
+        self.player = Knight(0, 0, self)
+        self.entities.add(self.player)
         self.stage_builder = StageBuilder(self.width, self.height)
         self.tiles = self.stage_builder.load_stage('GOLDEN_PLATFORM')
 
@@ -43,6 +46,18 @@ class Game:
 
     def process_input(self):
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    self.player.move_vector[0] = -1
+                if event.key == pygame.K_d:
+                    self.player.move_vector[0] = 1
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_a:
+                    if self.player.move_vector[0] == -1:
+                        self.player.move_vector[0] = 0
+                if event.key == pygame.K_d:
+                    if self.player.move_vector[0] == 1:
+                        self.player.move_vector[0] = 0
             if event.type == pygame.QUIT:
                 self.playing = False
 
