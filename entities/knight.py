@@ -56,20 +56,30 @@ class Knight(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, True, False)
 
     def move(self):
-        # If we should move along the x axis
+
         if self.move_vector[0] != 0:
+            tiles = [tile.rect for tile in self.game.tiles]
             move_amount = self.move_vector[0] * self.move_speed
-            test_rect = pygame.Rect(self.rect.left + move_amount, self.rect.top, 2, self.rect.height)
-            if test_rect.collidelist([tile.rect for tile in self.game.tiles]) == -1:
-                self.rect.left += move_amount
-            else:
-                # Get as close to the collider as possible
-                closest_movement = 0
-                test_rect = pygame.Rect(self.rect.left + closest_movement, self.rect.top, 2, self.rect.height)
-                while test_rect.collidelist([tile.rect for tile in self.game.tiles]) == -1:
-                    test_rect.left += closest_movement
-                    closest_movement += 1
-                self.rect.left += closest_movement
+            test_rect = self.rect.copy()
+
+            if self.move_vector[0] == -1:
+                test_rect.left += move_amount
+                if test_rect.collidelist(tiles) == -1:
+                    self.rect.left = test_rect.left
+                else:
+                    test_rect.left -= move_amount
+                    while test_rect.collidelist(tiles) == -1:
+                        test_rect.left += self.move_vector[0]
+                    self.rect.left = test_rect.left
+            elif self.move_vector[0] == 1:
+                test_rect.right += move_amount
+                if test_rect.collidelist(tiles) == -1:
+                    self.rect.right = test_rect.right
+                else:
+                    test_rect.right -= move_amount
+                    while test_rect.collidelist(tiles) == -1:
+                        test_rect.right += self.move_vector[0]
+                    self.rect.right = test_rect.right
 
         if self.move_vector[1] != 0:
             test_rect = pygame.Rect(self.rect.left, self.rect.top + self.move_vector[1] + self.rect.height,
@@ -85,12 +95,20 @@ class Knight(pygame.sprite.Sprite):
                     closest_movement += 1
                 self.rect.top += closest_movement
 
+    def attack(self):
+        print('Attacking')
+
+    def jump(self):
+        pass
+
     def load_animations(self):
         animation_directory = os.path.abspath('img/entities/knight')
         ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'idle.png'))
         self.animations['idle'] = ss.load_strip(64, 64, 15, l_shrink=22, r_shrink=15, t_shrink=12, d_shrink=20)
         ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'run.png'))
         self.animations['run'] = ss.load_strip(96, 64, 8, l_shrink=40, r_shrink=32, t_shrink=15, d_shrink=20)
+        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'attack.png'))
+        self.animations['attack'] = ss.load_strip(144, 64, 22)
         for key in self.animations.keys():
             for i in range(len(self.animations.get(key))):
                 self.animations.get(key)[i] = pygame.transform.scale(self.animations.get(key)[i],

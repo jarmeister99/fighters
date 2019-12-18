@@ -51,6 +51,8 @@ class Game:
                     self.player.move_vector[0] = -1
                 if event.key == pygame.K_d:
                     self.player.move_vector[0] = 1
+                if event.key == pygame.K_SPACE:
+                    self.player.attack()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     if self.player.move_vector[0] == -1:
