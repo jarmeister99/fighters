@@ -1,5 +1,10 @@
 import pygame
 import os
+
+from components.animated.gravity import Gravity
+from components.animated.animate import Animate
+from components.animated.flip_image import FlipImage
+from components.animated.running_animation import RunningAnimation
 from utility import spritesheet
 
 
@@ -31,32 +36,42 @@ class Knight(pygame.sprite.Sprite):
         self.rect.top = y
         self.facing = 'RIGHT'
 
+        # Attach components
+        self.components = {}
+        self.components['flip_image'] = FlipImage(self)
+        self.components['animate'] = Animate(self)
+        self.components['running_animation'] = RunningAnimation(self)
+        self.components['gravity'] = Gravity(self)
+
     def update(self):
         # Handle logic
-        self.move_vector[1] = 10
+
         self.move()
+        for component in self.components.values():
+            component.update()
 
-        # Flip if necessary
-        if self.move_vector[0] == -1:
-            self.facing = 'LEFT'
-            self.current_animation = 'run'
-        elif self.move_vector[0] == 1:
-            self.facing = 'RIGHT'
-            self.current_animation = 'run'
-        else:
-            self.current_animation = 'idle'
 
-        # Handle animation
-        self.animation_elapsed_time += 1
-        if self.animation_elapsed_time % self.animation_time == 0:
-            self.animation_steps += 1
-        animation_index = self.animation_steps % len(self.animations.get(self.current_animation))
-        self.image = self.animations.get(self.current_animation)[animation_index]
-        if self.facing == 'LEFT':
-            self.image = pygame.transform.flip(self.image, True, False)
+    def attack(self):
+        pass
+
+    def jump(self):
+        pass
+
+    def load_animations(self):
+        animation_directory = os.path.abspath('img/entities/knight')
+        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'idle.png'))
+        self.animations['idle'] = ss.load_strip(64, 64, 15, l_shrink=22, r_shrink=15, t_shrink=12, d_shrink=20)
+        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'run.png'))
+        self.animations['run'] = ss.load_strip(96, 64, 8, l_shrink=40, r_shrink=32, t_shrink=15, d_shrink=20)
+        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'attack.png'))
+        self.animations['attack'] = ss.load_strip(144, 64, 22)
+        for key in self.animations.keys():
+            for i in range(len(self.animations.get(key))):
+                self.animations.get(key)[i] = pygame.transform.scale(self.animations.get(key)[i],
+                                                                     (self.width, self.height))
+
 
     def move(self):
-
         if self.move_vector[0] != 0:
             tiles = [tile.rect for tile in self.game.tiles]
             move_amount = self.move_vector[0] * self.move_speed
@@ -94,23 +109,6 @@ class Knight(pygame.sprite.Sprite):
                     test_rect.top += closest_movement
                     closest_movement += 1
                 self.rect.top += closest_movement
-
-    def attack(self):
-        print('Attacking')
-
-    def jump(self):
-        pass
-
-    def load_animations(self):
-        animation_directory = os.path.abspath('img/entities/knight')
-        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'idle.png'))
-        self.animations['idle'] = ss.load_strip(64, 64, 15, l_shrink=22, r_shrink=15, t_shrink=12, d_shrink=20)
-        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'run.png'))
-        self.animations['run'] = ss.load_strip(96, 64, 8, l_shrink=40, r_shrink=32, t_shrink=15, d_shrink=20)
-        ss = spritesheet.SpriteSheet(os.path.join(animation_directory, 'attack.png'))
-        self.animations['attack'] = ss.load_strip(144, 64, 22)
-        for key in self.animations.keys():
-            for i in range(len(self.animations.get(key))):
-                self.animations.get(key)[i] = pygame.transform.scale(self.animations.get(key)[i],
-                                                                     (self.width, self.height))
-                pygame.image.save(self.animations.get(key)[i], f'{key}{i}.png')
+        else:
+            # Apply gravity if necessary
+            self.move_vector[1] = 1
