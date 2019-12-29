@@ -12,7 +12,7 @@ class Game:
     def __init__(self):
         self.entities = pygame.sprite.Group()
         self.player = None
-        self.tiles = None
+        self.terrain = None
         self.stage_builder = None
         self.backgrounds = {}
         self.current_bg = None
@@ -35,7 +35,7 @@ class Game:
         self.player = Knight(0, 0, self)
         self.entities.add(self.player)
         self.stage_builder = StageBuilder(self.width, self.height)
-        self.tiles = self.stage_builder.load_stage('GRASS_PLATFORM')
+        self.terrain = self.stage_builder.load_stage('GRASS_PLATFORM')
 
         while self.playing:
             clock.tick(60)
@@ -53,6 +53,8 @@ class Game:
                     self.player.move_vector[0] = 1
                 if event.key == pygame.K_SPACE:
                     self.player.attack()
+                if event.key == pygame.K_w:
+                    self.player.jump()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     if self.player.move_vector[0] == -1:
@@ -69,7 +71,7 @@ class Game:
     def process_rendering(self):
         self.win.blit(self.current_bg, (0, 0))
         self.entities.draw(self.win)
-        self.tiles.draw(self.win)
+        self.terrain.draw(self.win)
         pygame.display.flip()
 
 

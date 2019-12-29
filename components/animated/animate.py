@@ -14,14 +14,25 @@ class Animate(Component):
         self.animation_steps = 0
         self.current_animation = None
         self.animations = {}
+        self.locked_image = False
+
+    def lock_image(self):
+        self.locked_image = True
+
+    def unlock_image(self):
+        self.locked_image = False
 
     def update(self):
         """ Contains the logic for animation """
-        self.animation_elapsed_time += 1
-        if self.animation_elapsed_time % self.animation_time == 0:
-            self.animation_steps += 1
-        animation_index = self.animation_steps % len(self.animations.get(self.current_animation))
-        self.entity.image = self.animations.get(self.current_animation)[animation_index]
+        if self.locked_image:
+            self.entity.image = self.animations.get(self.current_animation)[
+                self.animation_steps % len(self.animations.get(self.current_animation))]
+        else:
+            self.animation_elapsed_time += 1
+            if self.animation_elapsed_time % self.animation_time == 0:
+                self.animation_steps += 1
+            animation_index = self.animation_steps % len(self.animations.get(self.current_animation))
+            self.entity.image = self.animations.get(self.current_animation)[animation_index]
         if self.entity.facing == 'LEFT':
             self.entity.image = pygame.transform.flip(self.entity.image, True, False)
 
