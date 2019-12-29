@@ -8,7 +8,7 @@ class Entity(pygame.sprite.Sprite):
         self.game = game
 
         # Physics attributes
-        self.move_vector = []
+        self.move_vector = [0, 0]
         self.move_speed = 0
 
         # Physical attributes
@@ -20,6 +20,13 @@ class Entity(pygame.sprite.Sprite):
         self.rect = None
         self.facing = None
 
+        # Components
+        self.components = {}
+
+    def update(self):
+        for component in self.components.values():
+            component.update()
+        self.move()
 
     def move(self):
         if self.move_vector[0] != 0:
@@ -59,6 +66,3 @@ class Entity(pygame.sprite.Sprite):
                     test_rect.top += closest_movement
                     closest_movement += 1
                 self.rect.top += closest_movement
-        else:
-            # Apply gravity if necessary
-            self.move_vector[1] = 1
