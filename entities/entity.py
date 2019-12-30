@@ -47,3 +47,21 @@ class Entity(pygame.sprite.Sprite):
                     to_move = 0
                 to_move -= 1
 
+        if self.move_vector[1] != 0:
+            faces = copy_faces(self.rect)
+            face = None
+            if self.move_vector[1] < 0:
+                face = faces.get('top')
+            elif self.move_vector[1] > 0:
+                face = faces.get('bot')
+            to_move = self.move_speed
+            if self.components.get('gravity'):
+                to_move = abs(self.components.get('gravity').y_push)
+            while to_move > 0:
+                face.top += self.move_vector[1]
+                if face.collidelist(terrain) == -1:
+                    self.rect.top += (self.move_vector[1] * to_move)
+                    to_move = 0
+                to_move -= 1
+
+

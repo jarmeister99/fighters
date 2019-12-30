@@ -59,7 +59,7 @@ class Knight(Entity):
     def jump(self):
         if not self.components.get('jump'):
             raise ComponentError('Player attempted to jump without a jump component')
-        self.components.get('jump').op_jump()
+        self.components.get('jump').jump()
 
     def load_animations(self):
         if not self.components.get('animate'):
