@@ -55,6 +55,8 @@ class Game:
                     self.player.attack()
                 if event.key == pygame.K_w:
                     self.player.jump()
+                if event.key == pygame.K_f:
+                    print('\n\n\n\n')
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     if self.player.move_vector[0] == -1:

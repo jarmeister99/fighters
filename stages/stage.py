@@ -13,5 +13,5 @@ class StageBuilder():
         if stage_key == 'GRASS_PLATFORM':
             for i in range(self.width // 64 + 1):
                 tiles.add(SolidTile(i * 64, self.height - 64, 64, 64, 'grass.png'))
-        tiles.add(SolidTile(275, (self.height / 2) + 110, self.width - 550, 25, 'gold.png'))
+        tiles.add(SolidTile(275, (self.height / 2) + 200, self.width - 550, 50, 'stone.png'))
         return tiles

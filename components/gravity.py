@@ -10,15 +10,18 @@ class Gravity(Component):
         self.g = g
         self.falling_img = falling_img
         self.old_img = None
+        self.downward_force = 0
 
     def update(self):
         if not is_on_ground(self.entity.rect, [terrain.rect for terrain in self.entity.game.terrain]):
             if self.entity.components.get('animate'):
                 self.entity.components.get('animate').lock_image()
+
             if self.entity.move_vector[1] == 0:
-                self.entity.move_vector[1] = 1
+                self.downward_force = self.g * 4
             else:
                 self.entity.move_vector[1] += self.g
+                self.downward_force += self.g
 
         elif self.entity.components.get('animate'):
             self.entity.components.get('animate').unlock_image()

@@ -1,6 +1,6 @@
 import pygame
 
-from phys.collision import is_on_ground
+from phys.collision import is_on_ground, copy_faces
 
 
 class Entity(pygame.sprite.Sprite):
@@ -31,42 +31,19 @@ class Entity(pygame.sprite.Sprite):
         self.move()
 
     def move(self):
+        terrain = [tile.rect for tile in self.game.terrain]
         if self.move_vector[0] != 0:
-            terrain = [terrain.rect for terrain in self.game.terrain]
-            move_amount = self.move_vector[0] * self.move_speed
-            test_rect = self.rect.copy()
+            faces = copy_faces(self.rect)
+            face = None
+            if self.move_vector[0] < 0:
+                face = faces.get('left')
+            elif self.move_vector[0] > 0:
+                face = faces.get('right')
+            to_move = self.move_speed
+            while to_move > 0:
+                face.left += self.move_vector[0]
+                if face.collidelist(terrain) == -1:
+                    self.rect.left += (self.move_vector[0] * to_move)
+                    to_move = 0
+                to_move -= 1
 
-            if self.move_vector[0] == -1:
-                test_rect.left += move_amount
-                if test_rect.collidelist(terrain) == -1:
-                    self.rect.left = test_rect.left
-                else:
-                    test_rect.left -= move_amount
-                    while test_rect.collidelist(terrain) == -1:
-                        test_rect.left += self.move_vector[0]
-                    self.rect.left = test_rect.left
-            elif self.move_vector[0] == 1:
-                test_rect.right += move_amount
-                if test_rect.collidelist(terrain) == -1:
-                    self.rect.right = test_rect.right
-                else:
-                    test_rect.right -= move_amount
-                    while test_rect.collidelist(terrain) == -1:
-                        test_rect.right += self.move_vector[0]
-                    self.rect.right = test_rect.right
-
-        if self.move_vector[1] != 0:
-
-            test_rect = self.rect.copy()
-            test_rect.top += self.move_vector[1]
-
-            if not is_on_ground(test_rect, [terrain.rect for terrain in self.game.terrain]):
-                self.rect.top += self.move_vector[1]
-
-            else:
-                closest_movement = 0
-                test_rect = self.rect.copy()
-                while not is_on_ground(test_rect, [terrain.rect for terrain in self.game.terrain]):
-                    test_rect.top += closest_movement
-                    closest_movement += 1
-                self.rect.top += closest_movement
